@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerController : NetworkBehaviour {
+public class PlayerController : MonoBehaviour {
 
     private Rigidbody playerRigidBody;
     private Vector3 velocity;
-
-    public float speed;
+    
+    public float rotationSpeed;
+    public float moveSpeed;
+    public float jumpSpeed;
 
     void Start () {
         playerRigidBody = GetComponent<Rigidbody>();
@@ -17,8 +18,15 @@ public class PlayerController : NetworkBehaviour {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
-        velocity = new Vector3(moveHorizontal, 0, moveVertical);
+        Vector3 rotation = Vector3.up * (moveHorizontal * rotationSpeed * Time.deltaTime);
+        transform.Rotate(rotation);
 
-        transform.Translate(velocity*speed*Time.deltaTime);
-	}
+        Vector3 translation = Vector3.forward * (moveVertical * moveSpeed * Time.deltaTime);
+        transform.Translate(translation);
+
+        if (Input.GetButtonDown("Jump")) {
+            Vector3 jumpTranslation = Vector3.up * jumpSpeed * Time.deltaTime;
+            transform.Translate(jumpTranslation, Space.World);
+        }
+    }
 }

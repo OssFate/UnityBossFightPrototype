@@ -10,32 +10,57 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody playerRigidBody;
     private Vector3 velocity;
     
-    public float rotationSpeed;
-    public float moveSpeed;
-    public float jumpSpeed;
+    public float rotationSpeed = 70;
+    public float moveSpeed = 10;
+    public float jumpHeight = 10;
+    public float timeToJump = 3f;
+    public float minJumpVelocity = 10.0f;
+    private bool checkBelow = true;
+    private float gravity;
+    private float initialYPosition = 1;
 
     void Start () {
         playerRigidBody = GetComponent<Rigidbody>();
+
+        // Required variables to Jump
         _collider = GetComponent<BoxCollider>();
         distToGroud = _collider.bounds.extents.y;
+
+        // Find the acceleration with a = 2x/t^2        
+        gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJump, 2);
+        Debug.Log(gravity);
+
+        // Initial velocity
+        velocity = new Vector3(0, 0, 0);
     }
 
 	void Update () {
         UpdateRayCast();
 
+        checkBelow = true;
+
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
-        Vector3 rotation = Vector3.up * (moveHorizontal * rotationSpeed * Time.deltaTime);
-        transform.Rotate(rotation);
+        // Rotation
+        transform.Rotate(Vector3.up * (moveHorizontal * rotationSpeed * Time.deltaTime));
 
-        Vector3 translation = Vector3.forward * (moveVertical * moveSpeed * Time.deltaTime);
-        transform.Translate(translation);
-
+        // Translation
         if (Input.GetButtonDown("Jump") && collisions.below) {
-            Vector3 jumpTranslation = Vector3.up * jumpSpeed * Time.deltaTime;
-            transform.Translate(jumpTranslation, Space.World);
+            velocity.y = minJumpVelocity;
+            checkBelow = false;
         }
+        Debug.Log("Pre-gravity: " + velocity.y);
+
+        velocity.z = moveVertical * moveSpeed * Time.deltaTime;
+        velocity.y += collisions.below ? 0 : gravity * Time.deltaTime;
+        Debug.Log("Post-gravity: " + velocity.y);
+
+        if (collisions.below && checkBelow) {
+            velocity.y = 0;
+        }
+
+        transform.Translate(velocity);
     }
 
     private void UpdateRayCast() {

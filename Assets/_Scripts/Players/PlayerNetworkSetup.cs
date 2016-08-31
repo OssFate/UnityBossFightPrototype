@@ -25,4 +25,8 @@ public class PlayerNetworkSetup : NetworkBehaviour {
         sceneCamera.SetActive(false);
     }
 
+    public void OnDestroy() {
+        sceneCamera.SetActive(true);
+    }
+
 }

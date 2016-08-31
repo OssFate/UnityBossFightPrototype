@@ -28,7 +28,6 @@ public class PlayerController : MonoBehaviour {
 
         // Find the acceleration with a = 2x/t^2        
         gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJump, 2);
-        Debug.Log(gravity);
 
         // Initial velocity
         velocity = new Vector3(0, 0, 0);
@@ -50,11 +49,9 @@ public class PlayerController : MonoBehaviour {
             velocity.y = minJumpVelocity;
             checkBelow = false;
         }
-        Debug.Log("Pre-gravity: " + velocity.y);
 
         velocity.z = moveVertical * moveSpeed * Time.deltaTime;
         velocity.y += collisions.below ? 0 : gravity * Time.deltaTime;
-        Debug.Log("Post-gravity: " + velocity.y);
 
         if (collisions.below && checkBelow) {
             velocity.y = 0;

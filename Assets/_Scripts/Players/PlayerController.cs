@@ -68,20 +68,23 @@ public class PlayerController : MonoBehaviour {
 
     private void UpdateRayCast() {
         collisions.below = Physics.Raycast(transform.position, -Vector3.up, distToGroud + 0.1f) ? true : false;
-        collisions.front = Physics.Raycast(transform.position, transform.forward, distToFront + 0.3f) ? true : false;
-        collisions.back = Physics.Raycast(transform.position, -transform.forward, distToFront + 0.3f) ? true : false;
-        Debug.DrawLine(transform.position, transform.position + (transform.forward * (distToFront + 0.3f)));
-        Debug.DrawLine(transform.position, transform.position + (-transform.forward * (distToFront + 0.3f)));
+        collisions.front = Physics.Raycast(transform.position, transform.forward, distToFront + 0.1f) ? true : false;
+        collisions.back = Physics.Raycast(transform.position, -transform.forward, distToFront + 0.1f) ? true : false;
+        collisions.right = Physics.Raycast(transform.position, transform.right, distToFront + 0.1f) ? true : false;
+        collisions.left = Physics.Raycast(transform.position, -transform.right, distToFront + 0.1f) ? true : false;
     }
 
     public struct CollisionInfo {
         public bool below;
         public bool front;
         public bool back;
+        public bool right;
+        public bool left;
 
         public void Reset() {
             below = false;
             front = back = false;
+            right = left = false;
         }
     }
 }
